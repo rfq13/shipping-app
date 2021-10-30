@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as ResetPassword;
 use Illuminate\Auth\Events\PasswordReset;
@@ -16,14 +15,14 @@ class AuthController extends Controller
     function login(Request $request)
     {
         $user = User::where('email',$request->email)->first();
+        $check = Hash::check($request->password, $user->password ?? '');
         $message = 'unathorized';
-        $check = Hash::check($request->password, $user->password);
         if (!$user || !$check) {
             return response()->json(compact('message'),401);
         }
         $message = 'success';
         $token = $user->createToken('login',['server:update'])->plainTextToken;
-        return response()->json(compact('user','token','message'));
+        return response()->json(compact('token','message'));
     }
 
     function logout(Request $request)
@@ -38,30 +37,31 @@ class AuthController extends Controller
         ],500);
     }
 
-    function cekid(Request $req)
-    {
-        $user = User::find(1);
-        $user->name = \Illuminate\Support\Str::random(60);
-        $user->save();
-        return $user;
-    }
-
     function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'password'=>['required',Password::min(7)->symbols()->letters()->numbers(),'confirmed'],
-            'email'=>['required','email:rfc,dns','string','unique:users'],
+        reqValidate($request->all(), [
+            'password'=>[
+                'required',
+                Password::min(7)
+                ->symbols()
+                ->letters()
+                ->numbers(),
+                'confirmed'
+            ],
+            'email'=>[
+                'required',
+                'email:rfc,dns',
+                'string',
+                'unique:users'
+            ],
             'name'=>'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
+        ]);      
 
         $user= new User;
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
         $user->name = $request->name;
+        $user->wallet_number = date('mydihs');
         $user->save();
         return $user->makeHidden('id');
     }
@@ -73,22 +73,17 @@ class AuthController extends Controller
 
     function password_update(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        reqValidate($request->all(), [
             'token' => 'required',
             'password'=>['required',Password::min(7)->symbols()->letters()->numbers(),'confirmed']
         ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
     
         $status = ResetPassword::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 foreach (array_column($user->passlogs->toArray(),'password') as $prev_pass) {
                     if (Hash::check($password, $prev_pass)) {
-                        header('Content-Type: application/json');
-                        http_response_code(400);
-                        echo json_encode(['message'=>'Reset password can\'t the same as the password that has been used!']);exit;
+                        throwJson(['message'=>'Reset password can\'t the same as the password that has been used!'],400);
                     }
                 }
                 

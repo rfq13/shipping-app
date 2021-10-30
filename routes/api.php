@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\WalletController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +15,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('cekid',[AuthController::class,'cekid']);
 
+// A. logic Test
 Route::get('placement/{numberid}', [\App\Http\Controllers\ContainerPlacementController::class,'index']);
 
+// B. Studi kasus
 Route::post('login',[AuthController::class,'login']);
 Route::post('register',[AuthController::class,'register']);
 Route::post('/reset-password', [AuthController::class,'password_update']);
@@ -27,11 +29,12 @@ Route::post('/forgot-password', [AuthController::class,'forgot_password'])->midd
 Route::group(['middleware'=>'auth:sanctum'], function () {
     Route::post('user',[AuthController::class,'user']);
     Route::post('logout',[AuthController::class,'logout']);
+    
+    Route::group(['prefix'=>'wallet','name'=>'wallet.'], function () {
+        Route::post('/',[WalletController::class,'topup']);
+        Route::get('/',[WalletController::class,'balance']);
+        Route::put('/',[WalletController::class,'transfer']);
+        Route::get('mutation',[WalletController::class,'mutation']);
+    });
+
 });
-
-// A. logic Test
-
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });

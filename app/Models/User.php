@@ -42,9 +42,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    protected $primaryKey = 'id';
+    
     function passlogs()
     {
         return $this->hasMany(PasswordLog::class);
+    }
+
+    function withdrawAccounts()
+    {
+        return $this->hasMany(WithdrawalAccount::class);
+    }
+
+    function balances()
+    {
+        return $this->hasMany(WalletBalance::class);
     }
 }
