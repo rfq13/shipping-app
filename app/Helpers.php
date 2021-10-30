@@ -12,3 +12,11 @@ if (!function_exists('randomNumber')) {
         return $result;
     }
 }
+
+if (!function_exists('getUrlParamsfromStr')) {
+    function getUrlParamsfromStr($url) {
+        $url_components = parse_url($url);
+        parse_str($url_components['query'], $params);
+        return $params;
+    }
+}
