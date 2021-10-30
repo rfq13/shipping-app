@@ -17,7 +17,7 @@ class CreateWalletBalancesTable extends Migration
             $table->id();
             $table->integer('type');
             $table->integer('user_id');
-            $table->integer('destination_id')->nullable()->default(0);
+            $table->integer('destination')->nullable()->default(0);
             $table->bigInteger('amount');
             $table->string('description')->nullable()->default(null);
             $table->timestamps();

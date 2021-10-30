@@ -35,6 +35,9 @@ Route::group(['middleware'=>'auth:sanctum'], function () {
         Route::get('/',[WalletController::class,'balance']);
         Route::put('/',[WalletController::class,'transfer']);
         Route::get('mutation',[WalletController::class,'mutation']);
+        Route::get('wd-account',[WalletController::class,'getWithdrawalAcc']);
+        Route::post('wd-account',[WalletController::class,'addWithdrawalAcc']);
+        Route::post('withdraw',[WalletController::class,'withdraw']);
     });
 
 });

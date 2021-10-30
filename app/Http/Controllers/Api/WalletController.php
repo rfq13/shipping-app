@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\WithdrawalAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,7 @@ class WalletController extends Controller
         ]);
 
         $topup = [
-            'description' => "top up ".rupiah($request->amount)." successfully",
+            'description' => $request->description,
             'amount' => $request->amount,
             'user_id' => $request->user()->id,
             'type' => env('WALLET_TOPUP')
@@ -53,21 +54,22 @@ class WalletController extends Controller
         }
         
         $transfer_sc = [
-            'description' => "transfer saldo to $destination->wallet_number",
+            'description' => $request->description,
             'amount' => -$request->amount,
             'user_id' => $request->user()->id,
             'type' => env('WALLET_TRANSFER'),
-            'destination_id'=>$destination->id
+            'destination'=>$destination->id
         ];
         $saldo_sc = updateBalance($transfer_sc);
         
         
         // dst mean destination
         $transfer_dst = [
-            'description' => "receive saldo from ".$request->user()->wallet_number,
+            'description' => $request->description,
             'amount' => $request->amount,
             'user_id' => $destination->id,
-            'type' => env('WALLET_RECEIVE')
+            'type' => env('WALLET_RECEIVE'),
+            'destination' => $request->user()->id
         ];
         $saldo_dst = updateBalance($transfer_dst);
 
@@ -76,25 +78,79 @@ class WalletController extends Controller
         }
     }
 
+    function withdraw(Request $request)
+    {
+        reqValidate($request->all(),[
+            'amount'=>'required|numeric',
+            'bank_id'=>'required|numeric'
+        ]);
+
+        $acc = WithdrawalAccount::where([
+            'user_id'=>$request->user()->id,
+            'id'=>$request->bank_id
+        ])
+        ->first();
+
+        $check = $acc && $request->user()->balances->sum('amount') >= $request->amount;
+
+        if(!$check) return response()->json(['message'=>'transfer failed! make sure your balance is sufficient and bank account is appropriate'],401);
+
+        $withdrawal = [
+            'description' => $request->description,
+            'amount' => -$request->amount,
+            'destination' => $request->bank_id,
+            'user_id' => $request->user()->id,
+            'type' => env('WALLET_WITHDRAW')
+        ];
+
+        if (updateBalance($withdrawal)) {
+            return response()->json(["message"=>"wthdraw successfully!"]);
+        }
+    }
+
     function mutation(Request $request)
     {
         $wallet_mutations = DB::select(DB::raw('
             SELECT 
-            (IF(wb.`type`=1,"topup",
-                IF(wb.`type`=2,"transfer",
-                    IF(wb.`type`=3, "receive",
-                        IF(wb.`type`=4,"withdraw",NULL)
+                (IF(wb.`type`='.env('WALLET_TOPUP').',"topup",
+                    IF(wb.`type`='.env('WALLET_TRANSFER').',"transfer",
+                        IF(wb.`type`='.env('WALLET_RECEIVE').', "receive",
+                            IF(wb.`type`='.env('WALLET_WITHDRAW').',"withdraw",NULL)
+                        )
                     )
-                )
-            )) as transaction_type,
-            (IF(wb.amount < 0, CONCAT("- Rp",fRupiah(wb.amount*-1)),CONCAT("Rp",fRupiah(wb.amount)))) as amount,
-            u.wallet_number as receiver,
-            wb.created_at, wb.updated_at
-            FROM wallet_balances wb
-            LEFT JOIN users u on u.id = wb.destination_id
+                )) as type_name,
+                (IF(wb.amount < 0, CONCAT("- Rp",fRupiah(wb.amount*-1)),CONCAT("Rp",fRupiah(wb.amount)))) as amount,
+                (IF (wb.`type`='.env('WALLET_WITHDRAW').',CONCAT("bank ",wa.`bank`," ",wa.`number`) ,u.wallet_number)) as destination,
+                wb.description,
+                wb.created_at, 
+                wb.updated_at
+            FROM  test_shipping_app.wallet_balances wb
+            LEFT JOIN test_shipping_app.users u on u.id = wb.destination
+            LEFT JOIN test_shipping_app.withdrawal_accounts wa on wa.id = wb.destination
             WHERE wb.user_id ='.$request->user()->id.'
         '));
 
         return response()->json(compact('wallet_mutations'));
+    }
+
+    function getWithdrawalAcc(Request $request)
+    {
+        throwJson($request->user()->withdrawAccounts);
+    }
+
+    function addWithdrawalAcc(Request $request)
+    {
+        reqValidate($request->all(),[
+            'bank'=>'required|regex:/^[a-zA-Z]+$/u',
+            'number'=>'required|numeric'
+        ]);
+
+        $wd_account = new WithdrawalAccount;
+        $wd_account->bank = $request->bank;
+        $wd_account->number = $request->number;
+        $wd_account->user_id = $request->user()->id;
+        $wd_account->save();
+
+        throwJson($wd_account);
     }
 }

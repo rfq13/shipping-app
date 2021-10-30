@@ -15,6 +15,7 @@ class CreateWithdrawalsTable extends Migration
     {
         Schema::create('withdrawal_accounts', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
             $table->string('bank');
             $table->string('number');
             $table->timestamps();

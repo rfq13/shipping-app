@@ -59,7 +59,7 @@ if (!function_exists('updateBalance')) {
             $balance = new \App\Models\WalletBalance;
             $balance->type = $transaction['type'];
             $balance->user_id = $transaction['user_id'];
-            $balance->destination_id = $transaction['destination_id'] ?? 0;
+            $balance->destination = $transaction['destination'] ?? 0;
             $balance->amount = $transaction['amount'];
             $balance->description = $transaction['description'];
             $balance->save();
