@@ -40,7 +40,7 @@ Route::group(['middleware'=>'auth:sanctum'], function () {
         Route::post('wd-account',[WalletController::class,'addWithdrawalAcc']);
         Route::post('withdraw',[WalletController::class,'withdraw']);
     });
-
+    
     Route::group(['prefix'=>'invoice','name'=>'invoice.'], function () {
         Route::post('billings',[InvoiceController::class,'createbilling']);
         Route::post('/',[InvoiceController::class,'store']);
@@ -52,3 +52,5 @@ Route::group(['middleware'=>'auth:sanctum'], function () {
     });
     
 });
+
+Route::get('queryException', [AuthController::class,'queryException']);

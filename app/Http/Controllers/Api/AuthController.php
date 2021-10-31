@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as ResetPassword;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -116,5 +118,30 @@ class AuthController extends Controller
         $message = $status===ResetPassword::RESET_LINK_SENT ? 'reset password link sended!' : 'send reset password link failed!';
 
         return compact('message');
+    }
+
+    function queryException(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            DB::table('users')->insert([
+                'email'=>'hadimrifqyfakhrul@gmail.com',
+                'name'=>'neymar',
+                'wallet_number'=>45432345,
+                'password'=>45432345,
+            ]);
+            DB::commit();
+
+            throwJson([
+                'message'=>"owngeh"
+            ]);
+            
+        } catch (QueryException $th) {
+            $statusCode = $th->errorInfo[1] == 1062 ? 422 : ($th->errorInfo[1] == 1064 ? 403 : 400);
+            throwJson([
+                'message'=>$th->errorInfo[2],
+                'errcode'=>$th->errorInfo[1],
+            ],$statusCode);
+        }
     }
 }
