@@ -1,0 +1,677 @@
+{
+	"info": {
+		"_postman_id": "a7e35253-6c74-482c-aaeb-c18455b58a2b",
+		"name": "Shipping App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"hadimrifqyfakhrul@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"forgot-password"
+							]
+						},
+						"description": "untuk melakukan permintaan perubahan password, gunakan parameter email untuk menerima email token reset password"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"1$3456d\",\n    \"password_confirmation\":\"1$3456d\",\n    \"email\":\"hadimrifqyfakhrul@gmail.com\",\n    \"name\":\"rfq\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"register"
+							]
+						},
+						"description": "untuk mengisi kolom password setidaknya terdapat 1 simbol,1 huruf dan 1 angka dan jumlah karakter minimal 7 karakter. pastikan terdapat parameter confirmation password yang isinya sama dengan parameter password\n\npastikan email telah sesuai & belum pernah terdaftar pada sistem"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"1$3456d\",\n    \"email\":\"hadimrifqyfakhrul@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"rifqy\",\n    \"password_confirmation\":\"rifqy12#ii\",\n    \"token\":\"3cc8b4371f6c569b325d0b09624902f098e667556f98280ba61748c0543425aa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reset-password"
+							]
+						},
+						"description": "pastikan password baru belum pernah digunakan sebelumnya.\n\nToken didapatkan dari email yang telah dikirimkan"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "TopUp",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\":\"10900\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet"
+							]
+						},
+						"description": "pastikan parameter amount berupa angka (numerik)"
+					},
+					"response": []
+				},
+				{
+					"name": "Add withdrawal account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bank\":\"bci\",\n    \"number\":\"12345345432\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallet/wd-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet",
+								"wd-account"
+							]
+						},
+						"description": "tambahkan akun bank untuk melakukan pencairan dana"
+					},
+					"response": []
+				},
+				{
+					"name": "Balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/wallet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet"
+							]
+						},
+						"description": "melihat balance e-wallet saat ini"
+					},
+					"response": []
+				},
+				{
+					"name": "withdrawal accounts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/wallet/wd-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet",
+								"wd-account"
+							]
+						},
+						"description": "melihat list akun bank untuk melakukan pencairan dana"
+					},
+					"response": []
+				},
+				{
+					"name": "Mutation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/wallet/mutation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet",
+								"mutation"
+							]
+						},
+						"description": "lihat riwayat transaksi"
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\":\"500\",\n    \"destination_account\":102130351054\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet"
+							]
+						},
+						"description": "untuk melakukan transafer, pastikan balance mencukupi dan id wallet tujuan telah sesuai"
+					},
+					"response": []
+				},
+				{
+					"name": "withdraw",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\":\"50\",\n    \"bank_id\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallet/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallet",
+								"withdraw"
+							]
+						},
+						"description": "pastikan balance tidak kurang dari amount withdraw"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice (One Bill)",
+			"item": [
+				{
+					"name": "order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\":[\n        {\n            \"id\":124567,\n            \"qty\":12\n        },\n        {\n            \"id\":11,\n            \"qty\":14\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\":[\n        {\n            \"id\":124567,\n            \"qty\":12\n        },\n        {\n            \"id\":11,\n            \"qty\":14\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								""
+							]
+						},
+						"description": "melihat list order"
+					},
+					"response": []
+				},
+				{
+					"name": "create Biling",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\":[7,8,9]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/billing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								"billing"
+							]
+						},
+						"description": "buat 1 kode billing untuk beberapa invoice\n\norder_id= id invoice"
+					},
+					"response": []
+				},
+				{
+					"name": "get Billings",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\":\"10310120214504\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/billing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								"billing"
+							]
+						},
+						"description": "lihat billing"
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\":\"10310120214504\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/bulkInvoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								"bulkInvoice"
+							]
+						},
+						"description": "download billing berformat pdf"
+					},
+					"response": []
+				},
+				{
+					"name": "Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|jSAuD77NNHOCPca2F2GjFS3HbbD04HonU68uiMhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"invoice_number\":\"12323\",\n    \"payment_status\":\"paid\",\n    \"billing\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/invoice/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"invoice",
+								"payment"
+							]
+						},
+						"description": "apabila billing = true, maka invoice number adalah id billing, apabila false maka invoice_number adalah code invoice"
+					},
+					"response": []
+				}
+			],
+			"description": "download invoice 1 billing id"
+		},
+		{
+			"name": "queryException",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/queryException",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"queryException"
+					]
+				},
+				"description": "api untuk melihat result studi kasus custom query exception"
+			},
+			"response": []
+		}
+	]
+}
