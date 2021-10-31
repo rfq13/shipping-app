@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\WalletController;
+use App\Http\Controllers\Api\InvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +41,14 @@ Route::group(['middleware'=>'auth:sanctum'], function () {
         Route::post('withdraw',[WalletController::class,'withdraw']);
     });
 
+    Route::group(['prefix'=>'invoice','name'=>'invoice.'], function () {
+        Route::post('billings',[InvoiceController::class,'createbilling']);
+        Route::post('/',[InvoiceController::class,'store']);
+        Route::get('/',[InvoiceController::class,'index']);
+        Route::post('billing',[InvoiceController::class,'createbilling']);
+        Route::get('billing',[InvoiceController::class,'billings']);
+        Route::post('payment',[InvoiceController::class,'updatePayment']);
+        Route::get('bulkInvoice',[InvoiceController::class,'bulkInvoice']);
+    });
+    
 });

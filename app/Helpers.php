@@ -23,6 +23,12 @@ if (!function_exists('getUrlParamsfromStr')) {
     }
 }
 
+if (!function_exists('generateInvoiceNumber')) {
+    function generateInvoiceNumber() {
+        return date('Ymd')."-".date('His');
+    }
+}
+
 if (!function_exists('reqValidate')) {
     function reqValidate($body,$rules,$messages=[]) {
         $validator = Validator::make($body,$rules,$messages);
